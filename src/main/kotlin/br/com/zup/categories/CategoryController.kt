@@ -1,4 +1,4 @@
-package br.com.zup.authors
+package br.com.zup.categories
 
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
@@ -10,15 +10,15 @@ import javax.transaction.Transactional
 import javax.validation.Valid
 
 @Validated
-@Controller("api/v1/authors")
-class AuthorController(private val entityManager: EntityManager) {
+@Controller("api/v1/categories")
+class CategoryController(private val entityManager: EntityManager) {
 
     @Post
     @Transactional
-    fun registerAuthor(@Body @Valid request: NewAuthorRequest): HttpResponse<Unit> {
+    fun registerCategory(@Body @Valid request: NewCategoryRequest): HttpResponse<Unit> {
         request.toModel()
-            .also { author: Author ->
-                entityManager.persist(author)
+            .also { category: Category ->
+                entityManager.persist(category)
             }
         return HttpResponse.ok()
     }
