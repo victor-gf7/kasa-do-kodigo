@@ -9,19 +9,20 @@ import javax.persistence.EntityManager
 
 @Singleton
 @TransactionalAdvice
-class UniqueValueValidator(private val entityManager: EntityManager) : ConstraintValidator<UniqueValue, Any> {
-
+class ExistsIdValidator(private val entityManager: EntityManager) : ConstraintValidator<ExistsId, Any> {
     override fun isValid(
         value: Any?,
-        annotationMetadata: AnnotationValue<UniqueValue>,
+        annotationMetadata: AnnotationValue<ExistsId>,
         context: ConstraintValidatorContext
     ): Boolean {
+        if (value == null)
+            return true
         val domainAttribute = annotationMetadata.values.getValue("fieldName")
         val klass = annotationMetadata.values.getValue("domainClass")
         return entityManager
             .createQuery("select 1 from $klass where $domainAttribute = :value")
             .setParameter("value", value)
             .resultList
-            .isEmpty()
+            .isNotEmpty()
     }
 }
